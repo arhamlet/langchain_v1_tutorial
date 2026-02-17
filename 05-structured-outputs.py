@@ -63,3 +63,35 @@ model = init_chat_model("gpt-4o-mini")
 
 ### TYPED DICT ###
 
+# from typing_extensions import TypedDict, Annotated
+#
+# class Movie(TypedDict):
+#     title: Annotated[str, ..., "The title of the movie"]
+#     year: Annotated[int, ..., "The year of the movie"]
+#     director: Annotated[str, ..., "The director of the movie"]
+#     rating: Annotated[float, ..., "The rating of the movie"]
+#
+# model_with_typed_dict = model.with_structured_output(Movie)
+# response = model_with_typed_dict.invoke("Provide details about the movie Avengers")
+# print(response)
+
+# from typing_extensions import TypedDict, Annotated
+# from pydantic import Field
+#
+# class Actor(TypedDict):
+#     name: str
+#     role: str
+#
+# class MovieDetails(TypedDict):
+#     title: str
+#     year: int
+#     cast: list[Actor]
+#     genres: list[str]
+#     budget: float | None = Field(None, description="budget in millions USD")
+#
+# model_with_typed_dict = model.with_structured_output(MovieDetails)
+# response = model_with_typed_dict.invoke("Provide details about the movie Avengers")
+# print(response)
+
+
+### Data classes
