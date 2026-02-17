@@ -1,0 +1,53 @@
+import os
+from pyexpat.errors import messages
+
+from dotenv import load_dotenv
+from langchain.agents import create_agent
+
+load_dotenv()
+
+os.environ["OPENAI_API_KEY"] = os.getenv("OPENAI_API_KEY")
+
+from langchain.chat_models import init_chat_model
+model = init_chat_model("gpt-4o-mini")
+
+
+### Built in middlewares ###
+
+from langchain.agents import create_agent
+from langchain.agents.middleware import SummarizationMiddleware
+from langgraph.checkpoint.memory import InMemorySaver
+from langchain_core.messages import HumanMessage, SystemMessage
+
+### Message based Summarization ###
+
+agent = create_agent(model=model,
+                     checkpointer=InMemorySaver(),
+                     middleware=[SummarizationMiddleware(
+                         model=model,
+                         trigger=("messages", 10),
+                         keep=("messages", 4)),],
+                     )
+
+## run with thread_id
+
+config = {"configurable":{"thread_id": "test-1"}}
+
+questions = [
+    "what  is 10 + 10?, answer in one word",
+    "what is the color of sky, answer in one word",
+    "what is 100/4",
+    "what  is 3*3",
+    "what does ai stand for?",
+    "Who is the president of the United States?"
+]
+
+for question in questions:
+    response = agent.invoke({
+        "messages":[
+            HumanMessage(content=question)
+        ],
+    },
+    config=config)
+    print(f"Message ; {response}")
+    print(f"Message ; {len(response['messages'])})")
