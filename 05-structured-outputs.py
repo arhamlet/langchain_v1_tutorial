@@ -95,3 +95,25 @@ model = init_chat_model("gpt-4o-mini")
 
 
 ### Data classes
+
+from pydantic import BaseModel, Field
+from langchain.agents import create_agent
+from dataclasses import dataclass
+
+@dataclass
+class ContactInfo:
+    """Contact Information of a person"""
+    name: str = Field(description="Name of the person")
+    email: str = Field(description="Email address of the person")
+    phone: str = Field(description="Phone number of the person")
+
+agent = create_agent(
+    model=model,
+    response_format=ContactInfo,
+)
+
+response = agent.invoke({"messages":[{
+    "role": "user",
+    "content": "Excract contact info from : John Doe, (555) 123-4567, johndoe@email.com"}]})
+
+print(response["structured_response"])
